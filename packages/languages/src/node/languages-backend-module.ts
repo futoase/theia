@@ -17,6 +17,6 @@ export default new ContainerModule(bind => {
 
     bind(ILogger).toDynamicValue(ctx => {
         const logger = ctx.container.get<ILogger>(ILogger);
-        return logger.child({ 'module': 'languages' });
+        return logger.child('languages');
     }).inSingletonScope().whenTargetNamed('languages');
 });
