@@ -6,16 +6,25 @@
  */
 
 import { inject, injectable } from "inversify";
-import { QuickOpenModel, QuickOpenItem, QuickOpenMode, QuickOpenService, OpenerService } from '@theia/core/lib/browser';
+import { QuickOpenModel, QuickOpenItem, QuickOpenMode, QuickOpenService, OpenerService, KeybindingRegistry, Keybinding } from '@theia/core/lib/browser';
 import { FileSystem, FileStat } from '@theia/filesystem/lib/common/filesystem';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import URI from '@theia/core/lib/common/uri';
 import { FileSearchService } from '../common/file-search-service';
 import { CancellationTokenSource } from '@theia/core/lib/common';
 import { LabelProvider } from "@theia/core/lib/browser/label-provider";
+import { Command } from '@theia/core/lib/common';
+
+export const quickFileOpen: Command = {
+    id: 'file-search.openFile',
+    label: 'Open File ...'
+};
 
 @injectable()
 export class QuickFileOpenService implements QuickOpenModel {
+
+    @inject(KeybindingRegistry)
+    protected readonly keybindingRegistry: KeybindingRegistry;
 
     constructor(
         @inject(FileSystem) protected readonly fileSystem: FileSystem,
@@ -29,18 +38,46 @@ export class QuickFileOpenService implements QuickOpenModel {
     }
 
     private wsRoot: FileStat | undefined;
+    private showIgnoredFiles: boolean = true;
+    private opened: boolean = false;
 
     isEnabled(): boolean {
         return this.wsRoot !== undefined;
     }
 
     open(): void {
-        this.quickOpenService.open(this, {
-            placeholder: 'file name to search',
-            fuzzyMatchLabel: true,
-            fuzzyMatchDescription: true,
-            fuzzySort: true
-        });
+        let placeholderText = "";
+        const keybinding = this.getKeyCommand();
+        if (!!keybinding) {
+            placeholderText = `File name to search press ${keybinding} to show/hide .gitignore files`;
+        }
+        if (!this.opened) {
+            this.opened = true;
+            this.quickOpenService.open(this, {
+                placeholder: placeholderText,
+                fuzzyMatchLabel: true,
+                fuzzyMatchDescription: true,
+                fuzzySort: true,
+                onClose: () => {
+                    this.showIgnoredFiles = true;
+                    this.opened = false;
+                }
+            });
+        } else {
+            this.showIgnoredFiles = !this.showIgnoredFiles;
+            this.quickOpenService.refresh();
+        }
+    }
+
+    private getKeyCommand(): string | undefined {
+        let keyCommandStr = "";
+        const keyCommand = this.keybindingRegistry.getKeybindingsForCommand(quickFileOpen.id);
+        if (keyCommand) {
+            keyCommandStr = Keybinding.acceleratorFor(keyCommand[0]).join(" ");
+            keyCommandStr = keyCommandStr.replace(" ", "+");
+            return keyCommandStr;
+        }
+        return undefined;
     }
 
     private cancelIndicator = new CancellationTokenSource();
@@ -65,7 +102,12 @@ export class QuickFileOpenService implements QuickOpenModel {
                 acceptor(await Promise.all(itemPromises));
             }
         };
-        this.fileSearchService.find(lookFor, { rootUri, fuzzyMatch: true, limit: 200 }, token).then(handler);
+        this.fileSearchService.find(lookFor, {
+            rootUri,
+            fuzzyMatch: true,
+            limit: 200,
+            useGitIgnore: this.showIgnoredFiles
+        }, token).then(handler);
     }
 
     private async toItem(uriString: string) {

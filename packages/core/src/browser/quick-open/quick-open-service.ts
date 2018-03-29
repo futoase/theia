@@ -49,11 +49,16 @@ export namespace QuickOpenOptions {
 }
 
 @injectable()
-export class QuickOpenService {
+export abstract class QuickOpenService {
     /**
      * It should be implemented by an extension, e.g. by the monaco extension.
      */
     open(model: QuickOpenModel, options?: QuickOpenOptions): void {
         // no-op
     }
+
+    /**
+     * Call the onType method when the dialog is already open.
+     */
+    abstract refresh(): void;
 }

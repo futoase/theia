@@ -26,6 +26,7 @@ export class MonacoQuickOpenService extends QuickOpenService {
     protected _widget: monaco.quickOpen.QuickOpenWidget | undefined;
     protected opts: MonacoQuickOpenControllerOpts | undefined;
     protected previousActiveElement: Element | undefined;
+    private lastLookedFor: string = "";
 
     constructor(@inject(ILogger) protected readonly logger: ILogger) {
         super();
@@ -89,11 +90,13 @@ export class MonacoQuickOpenService extends QuickOpenService {
     protected onClose(cancelled: boolean): void {
         if (this.opts && this.opts.onClose) {
             this.opts.onClose(cancelled);
+            this.lastLookedFor = "";
         }
     }
 
     protected async onType(lookFor: string): Promise<void> {
         const opts = this.opts;
+        this.lastLookedFor = lookFor;
         if (this.widget && opts) {
             if (opts.onType) {
                 opts.onType(lookFor, model =>
@@ -103,6 +106,10 @@ export class MonacoQuickOpenService extends QuickOpenService {
                 this.widget.setInput(m, opts.getAutoFocus(lookFor), opts.inputAriaLabel);
             }
         }
+    }
+
+    refresh() {
+        this.onType(this.lastLookedFor);
     }
 
 }
