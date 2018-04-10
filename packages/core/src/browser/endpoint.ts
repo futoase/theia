@@ -102,7 +102,7 @@ export namespace Endpoint {
         path?: string;
     }
 
-    // Necessary for running tests with dependecy on TS lib on node
+    // Necessary for running tests with dependency on TS lib on node
     // FIXME figure out how to mock with ts-node
     export class Location {
         host: string;
