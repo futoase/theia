@@ -5,19 +5,23 @@ declare module monaco.instantiation {
     }
 }
 
-declare module monaco.editor {
+declare namespace monaco.editor {
 
     export interface IDiffNavigator {
         readonly ranges: IDiffRange[];
         readonly nextIdx: number;
-        initIdx(fwd: boolean): void;
+        readonly revealFirst: boolean;
+        _initIdx(fwd: boolean): void;
     }
 
     export interface IDiffRange {
         readonly range: Range;
     }
 
-    export interface ICommonCodeEditor {
+    export interface IStandaloneCodeEditor extends CommonCodeEditor {
+    }
+
+    export interface CommonCodeEditor {
         readonly _commandService: monaco.commands.ICommandService;
         readonly _instantiationService: monaco.instantiation.IInstantiationService;
         readonly _contributions: {
@@ -62,7 +66,7 @@ declare module monaco.editor {
     }
 
     export interface IEditorReference {
-        getControl(): monaco.editor.ICommonCodeEditor;
+        getControl(): monaco.editor.CommonCodeEditor;
     }
 
     export interface IEditorInput {
@@ -547,7 +551,7 @@ declare module monaco.filters {
     export function matchesFuzzy(word: string, wordToMatchAgainst: string, enableSeparateSubstringMatching?: boolean): IMatch[] | undefined;
 }
 
-declare module monaco.editorCommonExtensions {
+declare module monaco.editorExtensions {
 
     export interface EditorAction {
         id: string;
@@ -555,7 +559,7 @@ declare module monaco.editorCommonExtensions {
         alias: string;
     }
 
-    export module CommonEditorRegistry {
+    export module EditorExtensionsRegistry {
         export function getEditorActions(): EditorAction[];
     }
 }

@@ -1653,14 +1653,6 @@ cache-base@^1.0.1:
 cacheable-request@^2.1.1:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/cacheable-request/-/cacheable-request-2.1.4.tgz#0d808801b6342ad33c91df9d0b44dc09b91e5c3d"
-  dependencies:
-    clone-response "1.0.2"
-    get-stream "3.0.0"
-    http-cache-semantics "3.8.1"
-    keyv "3.0.0"
-    lowercase-keys "1.0.0"
-    normalize-url "2.0.1"
-    responselike "1.0.2"
 
 caching-transform@^1.0.0:
   version "1.0.1"
@@ -1958,12 +1950,6 @@ cliui@^4.0.0:
 clone-buffer@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/clone-buffer/-/clone-buffer-1.0.0.tgz#e3e25b207ac4e701af721e2cb5a16792cac3dc58"
-
-clone-response@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/clone-response/-/clone-response-1.0.2.tgz#d1dc973920314df67fbeb94223b4ee350239e96b"
-  dependencies:
-    mimic-response "^1.0.0"
 
 clone-stats@^0.0.1:
   version "0.0.1"
@@ -3882,16 +3868,16 @@ get-stdin@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/get-stdin/-/get-stdin-4.0.1.tgz#b968c6b0a04384324902e8bf1a5df32579a450fe"
 
-get-stream@3.0.0, get-stream@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/get-stream/-/get-stream-3.0.0.tgz#8e943d1358dc37555054ecbe2edb05aa174ede14"
-
 get-stream@^2.2.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/get-stream/-/get-stream-2.3.1.tgz#5f38f93f346009666ee0150a054167f91bdd95de"
   dependencies:
     object-assign "^4.0.1"
     pinkie-promise "^2.0.0"
+
+get-stream@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/get-stream/-/get-stream-3.0.0.tgz#8e943d1358dc37555054ecbe2edb05aa174ede14"
 
 get-value@^2.0.3, get-value@^2.0.6:
   version "2.0.6"
@@ -4540,10 +4526,6 @@ htmlparser2@^3.9.0:
     entities "^1.1.1"
     inherits "^2.0.1"
     readable-stream "^2.0.2"
-
-http-cache-semantics@3.8.1:
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-3.8.1.tgz#39b0e16add9b605bf0a9ef3d9daaf4843b4cacd2"
 
 http-errors@1.6.2, http-errors@~1.6.2:
   version "1.6.2"
@@ -5260,10 +5242,6 @@ jsmin@1.x:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/jsmin/-/jsmin-1.0.1.tgz#e7bd0dcd6496c3bf4863235bf461a3d98aa3b98c"
 
-json-buffer@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/json-buffer/-/json-buffer-3.0.0.tgz#5b1f397afc75d677bde8bcfc0e47e1f9a3d9a898"
-
 json-parse-better-errors@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.1.tgz#50183cd1b2d25275de069e9e71b467ac9eab973a"
@@ -5353,12 +5331,6 @@ jxLoader@*:
 kew@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/kew/-/kew-0.7.0.tgz#79d93d2d33363d6fdd2970b335d9141ad591d79b"
-
-keyv@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/keyv/-/keyv-3.0.0.tgz#44923ba39e68b12a7cec7df6c3268c031f2ef373"
-  dependencies:
-    json-buffer "3.0.0"
 
 kind-of@^3.0.2, kind-of@^3.0.3, kind-of@^3.1.0, kind-of@^3.2.0:
   version "3.2.2"
@@ -5862,7 +5834,7 @@ lower-case@^1.1.0, lower-case@^1.1.1, lower-case@^1.1.2:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/lower-case/-/lower-case-1.1.4.tgz#9a2cabd1b9e8e0ae993a4bf7d5875c39c42e8eac"
 
-lowercase-keys@1.0.0, lowercase-keys@^1.0.0:
+lowercase-keys@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/lowercase-keys/-/lowercase-keys-1.0.0.tgz#4e3366b39e7f5457e35f1324bdf6f88d0bfc7306"
 
@@ -6249,37 +6221,37 @@ moment@^2.21.0:
   version "2.21.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.21.0.tgz#2a114b51d2a6ec9e6d83cf803f838a878d8a023a"
 
-monaco-css@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/monaco-css/-/monaco-css-1.3.3.tgz#1463973676102cf00d931bcf1296b05177fa5b8b"
+monaco-css@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/monaco-css/-/monaco-css-2.0.1.tgz#703b1033e64eb18a045a8cd7f7ff0e4172ce9d33"
 
-monaco-editor-core@^0.10.1:
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/monaco-editor-core/-/monaco-editor-core-0.10.1.tgz#15121d9e28e51f094d9c556bf852dc9c13dc42a1"
+monaco-editor-core@^0.11.6:
+  version "0.11.7"
+  resolved "https://registry.yarnpkg.com/monaco-editor-core/-/monaco-editor-core-0.11.7.tgz#87424716386bd4f940a15b79b5dfba23511c9755"
 
-monaco-html@^1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/monaco-html/-/monaco-html-1.3.2.tgz#588f0bd795f3b3ed2bf256c5f8f2d2bf6b13be82"
+monaco-html@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/monaco-html/-/monaco-html-2.0.2.tgz#9a16d503d0615246f5f6c856463b5b1ea9f9b016"
 
-monaco-json@^1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/monaco-json/-/monaco-json-1.3.2.tgz#92ecca1ef4090e9db48fb0bac2af02e32882a955"
+monaco-json@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/monaco-json/-/monaco-json-2.0.1.tgz#d8ce650fbbd58102bc6df6090a19b8f1128ecb42"
 
-monaco-languageclient@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/monaco-languageclient/-/monaco-languageclient-0.4.0.tgz#5f63f88bcc5df898d7efd1ad3bc088922fb36a7f"
+monaco-languageclient@0.5.0-1:
+  version "0.5.0-1"
+  resolved "https://registry.yarnpkg.com/monaco-languageclient/-/monaco-languageclient-0.5.0-1.tgz#7497595a1133c4bd4fdd554de80340286797ffea"
   dependencies:
     glob-to-regexp "^0.3.0"
-    monaco-editor-core "^0.10.1"
-    vscode-base-languageclient "^0.0.1-alpha.2"
+    monaco-editor-core "^0.11.6"
+    vscode-base-languageclient "^0.0.1-alpha.4"
 
-monaco-languages@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/monaco-languages/-/monaco-languages-0.9.0.tgz#03ea9c52031b79837e7a389d4fc6211da3f758fd"
+monaco-languages@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/monaco-languages/-/monaco-languages-1.0.4.tgz#503bb678d78b8b183911984ae53d5f0302279abe"
 
-monaco-typescript@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/monaco-typescript/-/monaco-typescript-2.3.0.tgz#ee2e1f6eaad3febb841feb8a4ab90d4abab44b4f"
+monaco-typescript@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/monaco-typescript/-/monaco-typescript-3.0.2.tgz#89d7ff8d245d160756558fef0089d6e0173ceba3"
 
 moo-server@*, moo-server@1.3.x:
   version "1.3.0"
@@ -6540,14 +6512,6 @@ normalize-path@^2.0.0, normalize-path@^2.0.1, normalize-path@^2.1.1:
 normalize-range@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/normalize-range/-/normalize-range-0.1.2.tgz#2d10c06bdfd312ea9777695a4d28439456b75942"
-
-normalize-url@2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-2.0.1.tgz#835a9da1551fa26f70e92329069a23aa6574d7e6"
-  dependencies:
-    prepend-http "^2.0.0"
-    query-string "^5.0.1"
-    sort-keys "^2.0.0"
 
 normalize-url@^1.4.0:
   version "1.9.1"
@@ -7585,14 +7549,6 @@ query-string@^4.1.0:
     object-assign "^4.1.0"
     strict-uri-encode "^1.0.0"
 
-query-string@^5.0.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/query-string/-/query-string-5.1.1.tgz#a78c012b71c17e05f2e3fa2319dd330682efb3cb"
-  dependencies:
-    decode-uri-component "^0.2.0"
-    object-assign "^4.1.0"
-    strict-uri-encode "^1.0.0"
-
 querystring-es3@^0.2.0:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/querystring-es3/-/querystring-es3-0.2.1.tgz#9ec61f79049875707d69414596fd907a4d711e73"
@@ -8077,12 +8033,6 @@ resolve@^1.1.6, resolve@^1.1.7, resolve@^1.3.2:
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.5.0.tgz#1f09acce796c9a762579f31b2c1cc4c3cddf9f36"
   dependencies:
     path-parse "^1.0.5"
-
-responselike@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/responselike/-/responselike-1.0.2.tgz#918720ef3b631c5642be068f15ade5a46f4ba1e7"
-  dependencies:
-    lowercase-keys "^1.0.0"
 
 restore-cursor@^1.0.1:
   version "1.0.1"
@@ -9667,9 +9617,9 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
-vscode-base-languageclient@^0.0.1-alpha.2, vscode-base-languageclient@^0.0.1-alpha.3:
-  version "0.0.1-alpha.3"
-  resolved "https://registry.yarnpkg.com/vscode-base-languageclient/-/vscode-base-languageclient-0.0.1-alpha.3.tgz#9b68a8e28a5c84c4e1298b69bedd356ed2e663be"
+vscode-base-languageclient@^0.0.1-alpha.4:
+  version "0.0.1-alpha.4"
+  resolved "https://registry.yarnpkg.com/vscode-base-languageclient/-/vscode-base-languageclient-0.0.1-alpha.4.tgz#72f402c1d186029a3717eb606fc843629d088d31"
   dependencies:
     vscode-jsonrpc "^3.2.0"
     vscode-languageserver-types "^3.2.0"

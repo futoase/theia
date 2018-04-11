@@ -137,14 +137,14 @@ export class MonacoEditor implements TextEditor, IEditorReference {
         return this.onSelectionChangedEmitter.event;
     }
 
-    revealPosition(raw: Position, options: RevealPositionOptions = { vertical: 'center', horizontal: true }): void {
+    revealPosition(raw: Position, options: RevealPositionOptions = { vertical: 'center' }): void {
         const position = this.p2m.asPosition(raw);
         switch (options.vertical) {
             case 'auto':
-                this.editor.revealPosition(position, false, options.horizontal);
+                this.editor.revealPosition(position);
                 break;
             case 'center':
-                this.editor.revealPosition(position, true, options.horizontal);
+                this.editor.revealPositionInCenter(position);
                 break;
             case 'centerIfOutsideViewport':
                 this.editor.revealPositionInCenterIfOutsideViewport(position);
@@ -210,6 +210,7 @@ export class MonacoEditor implements TextEditor, IEditorReference {
 
     protected autoresize() {
         if (this.autoSizing) {
+            // tslint:disable-next-line:no-null-keyword
             this.resize(null);
         }
     }
