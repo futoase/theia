@@ -102,6 +102,33 @@ export class GitWidget extends VirtualWidget {
         }
     }
 
+    async commit(repository?: Repository, options?: 'amend' | 'sign-off', message: string = `${this.message}\n\n${this.additionalMessage}`) {
+        if (repository) {
+            if (message.trim().length > 0) {
+                try {
+                    // We can make sure, repository exists, otherwise we would not have this button.
+                    const signOff = options === 'sign-off';
+                    const amend = options === 'amend';
+                    await this.git.commit(repository, message, { signOff, amend });
+                    const status = await this.git.status(repository);
+                    this.resetCommitMessages();
+                    this.updateView(status);
+                } catch (error) {
+                    this.logError(error);
+                }
+            } else {
+                // need to access the element, because Phosphor.js is not updating `value`but only `setAttribute('value', ....)` which only sets the default value.
+                const messageInput = document.getElementById('git-messageInput') as HTMLInputElement;
+                if (messageInput) {
+                    this.messageInputHighlighted = true;
+                    this.update();
+                    messageInput.focus();
+                }
+                this.messageService.error('Please provide a commit message!');
+            }
+        }
+    }
+
     protected async updateView(status: WorkingDirectoryStatus | undefined) {
         const stagedChanges = [];
         const unstagedChanges = [];
@@ -161,28 +188,6 @@ export class GitWidget extends VirtualWidget {
     }
 
     protected renderCommandBar(repository: Repository | undefined): h.Child {
-        const commit = async () => {
-            if (this.message !== '') {
-                try {
-                    // We can make sure, repository exists, otherwise we would not have this button.
-                    await this.git.commit(repository!, `${this.message}\n\n${this.additionalMessage}`);
-                    const status = await this.git.status(repository!);
-                    this.resetCommitMessages();
-                    this.updateView(status);
-                } catch (error) {
-                    this.logError(error);
-                }
-            } else {
-                // need to access the element, because Phosphor.js is not updating `value`but only `setAttribute('value', ....)` which only sets the default value.
-                const messageInput = document.getElementById('git-messageInput') as HTMLInputElement;
-                if (messageInput) {
-                    this.messageInputHighlighted = true;
-                    this.update();
-                    messageInput.focus();
-                }
-                this.messageService.error('Please provide a commit message!');
-            }
-        };
         const refresh = h.a({
             className: 'toolbar-button',
             title: 'Refresh',
@@ -207,7 +212,7 @@ export class GitWidget extends VirtualWidget {
         const commitButton = h.button({
             className: 'theia-button',
             title: 'Commit all the staged changes',
-            onclick: () => commit()
+            onclick: () => this.commit.bind(this)()
         }, 'Commit');
         const commitContainer = h.div({ className: 'buttons' }, commitButton);
         const placeholder = h.div({ className: 'placeholder' });

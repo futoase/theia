@@ -43,6 +43,12 @@ export namespace GIT_COMMANDS {
         id: 'git.checkout',
         label: 'Git: Checkout'
     };
+    export const COMMIT_AMEND = {
+        id: 'git.commit.amend'
+    };
+    export const COMMIT_SIGN_OFF = {
+        id: 'git.commit.signOff'
+    };
     export const CHANGE_REPOSITORY = {
         id: 'git.change.repository',
         label: 'Git: Change Repository...'
@@ -124,13 +130,20 @@ export class GitViewContribution extends AbstractViewContribution<GitWidget> {
 
     registerMenus(menus: MenuModelRegistry): void {
         super.registerMenus(menus);
-        const commands = [GIT_COMMANDS.FETCH, GIT_COMMANDS.PULL, GIT_COMMANDS.PUSH, GIT_COMMANDS.MERGE];
-        commands.forEach(command =>
+        [GIT_COMMANDS.FETCH, GIT_COMMANDS.PULL, GIT_COMMANDS.PUSH, GIT_COMMANDS.MERGE].forEach(command =>
             menus.registerMenuAction(GIT_WIDGET_CONTEXT_MENU, {
                 commandId: command.id,
                 label: command.label.slice('Git: '.length)
             })
         );
+        menus.registerMenuAction(GIT_WIDGET_CONTEXT_MENU, {
+            commandId: GIT_COMMANDS.COMMIT_AMEND.id,
+            label: 'Commit (Amend)'
+        });
+        menus.registerMenuAction(GIT_WIDGET_CONTEXT_MENU, {
+            commandId: GIT_COMMANDS.COMMIT_SIGN_OFF.id,
+            label: 'Commit (Signed Off)'
+        });
         menus.registerMenuAction(EditorContextMenu.NAVIGATION, {
             commandId: GIT_COMMANDS.OPEN_FILE.id
         });
@@ -161,6 +174,27 @@ export class GitViewContribution extends AbstractViewContribution<GitWidget> {
             execute: () => this.quickOpenService.checkout(),
             isEnabled: () => !!this.repositoryTracker.selectedRepository
         });
+        registry.registerCommand(GIT_COMMANDS.COMMIT_SIGN_OFF, {
+            execute: () => this.tryGetWidget()!.commit(this.repositoryTracker.selectedRepository, 'sign-off'),
+            isEnabled: () => !!this.tryGetWidget() && !!this.repositoryTracker.selectedRepository
+        });
+        registry.registerCommand(GIT_COMMANDS.COMMIT_AMEND, {
+            execute: async () => {
+                const widget = this.tryGetWidget();
+                const { selectedRepository } = this.repositoryTracker;
+                if (!!widget && !!selectedRepository) {
+                    try {
+                        const message = await this.quickOpenService.amendCommitMessage();
+                        widget.commit(selectedRepository, 'amend', message);
+                    } catch (e) {
+                        if (!(e instanceof Error) || e.message !== 'User abort.') {
+                            throw e;
+                        }
+                    }
+                }
+            },
+            isEnabled: () => !!this.tryGetWidget() && !!this.repositoryTracker.selectedRepository
+        });
         registry.registerCommand(GIT_COMMANDS.CHANGE_REPOSITORY, {
             execute: () => this.quickOpenService.changeRepository(),
             isEnabled: () => this.hasMultipleRepositories()
@@ -181,6 +215,7 @@ export class GitViewContribution extends AbstractViewContribution<GitWidget> {
         const options = this.openFileOptions;
         return options && this.editorManager.open(options.uri, options.options);
     }
+
     protected get openFileOptions(): { uri: URI, options?: EditorOpenerOptions } | undefined {
         const widget = this.editorManager.currentEditor;
         if (widget && DiffUris.isDiffUri(widget.editor.uri)) {
@@ -200,6 +235,7 @@ export class GitViewContribution extends AbstractViewContribution<GitWidget> {
         }
         return undefined;
     }
+
     protected get openChangesOptions(): { change: GitFileChange, options?: EditorOpenerOptions } | undefined {
         const view = this.tryGetWidget();
         if (!view) {

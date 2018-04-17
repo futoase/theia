@@ -204,15 +204,54 @@ export class GitQuickOpenService {
         }
     }
 
+    async amendCommitMessage(): Promise<string> {
+        const repository = this.getRepository();
+        if (repository === undefined) {
+            throw new Error('No repository was selected.');
+        }
+        const commits = await this.git.log(repository, { maxCount: 1 });
+        if (commits.length === 0) {
+            throw new Error(`Repository ${repository.localUri} is not yet initialized.`);
+        }
+        const { summary, body } = commits.shift()!;
+        const message = body ? `${summary}${body.replace(/[\r\n]+/g, ' ')}` : summary;
+        return new Promise<string>((resolve, reject) => {
+            const createEditCommitMessageModel: QuickOpenModel = {
+                onType(lookFor: string, acceptor: (items: QuickOpenItem[]) => void): void {
+                    const dynamicItems: QuickOpenItem[] = [];
+                    const suffix = `Press 'Enter' to confirm or 'Escape' to cancel.`;
+                    if (!lookFor) {
+                        dynamicItems.push(new GitQuickOpenItem(`To reuse the last commit message, press 'Enter' or 'Escape' to cancel.`,
+                            () => resolve(body ? `${summary}\n\n${body}` : summary), () => `To reuse the last commit message, press 'Enter' or 'Escape' to cancel.`));
+                    } else {
+                        dynamicItems.push(new GitQuickOpenItem(
+                            `Rewrite previous commit message. ${suffix}`,
+                            item => resolve(lookFor)
+                        ));
+                    }
+                    acceptor(dynamicItems);
+                },
+            };
+            const onClose = (canceled: boolean): void => {
+                if (canceled) {
+                    reject(new Error('User abort.'));
+                }
+            };
+            this.quickOpenService.open(createEditCommitMessageModel, this.getOptions(message, false, '', onClose));
+        });
+    }
+
     private open(items: QuickOpenItem | QuickOpenItem[], placeholder: string): void {
         this.quickOpenService.open(this.getModel(Array.isArray(items) ? items : [items]), this.getOptions(placeholder));
     }
 
-    private getOptions(placeholder: string, fuzzyMatchLabel: boolean = true): QuickOpenOptions {
+    private getOptions(placeholder: string, fuzzyMatchLabel: boolean = true, prefix: string = '', onClose: (canceled: boolean) => void = () => { }): QuickOpenOptions {
         return QuickOpenOptions.resolve({
+            prefix,
             placeholder,
             fuzzyMatchLabel,
-            fuzzySort: false
+            fuzzySort: false,
+            onClose
         });
     }
 
