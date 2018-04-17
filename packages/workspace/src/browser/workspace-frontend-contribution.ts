@@ -52,13 +52,15 @@ export class WorkspaceFrontendContribution implements CommandContribution, MenuC
             if (root) {
                 const rootUri = new URI(root.uri).parent;
                 const rootStat = await this.fileSystem.getFileStat(rootUri.toString());
-                const name = this.labelProvider.getName(rootUri);
-                const label = await this.labelProvider.getIcon(root);
-                const rootNode = DirNode.createRoot(rootStat, name, label);
-                const dialog = this.fileDialogFactory({ title: WorkspaceCommands.OPEN.label! });
-                dialog.model.navigateTo(rootNode);
-                const node = await dialog.open();
-                this.openFile(node);
+                if (rootStat) {
+                    const name = this.labelProvider.getName(rootUri);
+                    const label = await this.labelProvider.getIcon(root);
+                    const rootNode = DirNode.createRoot(rootStat, name, label);
+                    const dialog = this.fileDialogFactory({ title: WorkspaceCommands.OPEN.label! });
+                    dialog.model.navigateTo(rootNode);
+                    const node = await dialog.open();
+                    this.openFile(node);
+                }
             }
         });
     }

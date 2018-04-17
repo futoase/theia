@@ -16,8 +16,7 @@ import { MaybePromise } from "@theia/core";
 export class WorkspaceUriLabelProviderContribution extends DefaultUriLabelProviderContribution {
 
     wsRoot: string;
-
-    constructor( @inject(WorkspaceService) wsService: WorkspaceService,
+    constructor(@inject(WorkspaceService) wsService: WorkspaceService,
         @inject(FileSystem) protected fileSystem: FileSystem) {
         super();
         wsService.root.then(root => {
@@ -41,11 +40,16 @@ export class WorkspaceUriLabelProviderContribution extends DefaultUriLabelProvid
         return new URI(element.toString());
     }
 
-    private getStat(element: URI | FileStat): MaybePromise<FileStat> {
+    private getStat(element: URI | FileStat): MaybePromise<FileStat | undefined> {
         if (FileStat.is(element)) {
             return element;
         }
-        return this.fileSystem.getFileStat(element.toString());
+        const stat = this.fileSystem.getFileStat(element.toString());
+        if (stat) {
+            return stat;
+        } else {
+            return undefined;
+        }
     }
 
     async getIcon(element: URI | FileStat): Promise<string> {
@@ -57,10 +61,14 @@ export class WorkspaceUriLabelProviderContribution extends DefaultUriLabelProvid
         if (!icon) {
             try {
                 const stat = await this.getStat(element);
-                if (stat.isDirectory) {
-                    return 'fa fa-folder';
+                if (stat) {
+                    if (stat.isDirectory) {
+                        return 'fa fa-folder';
+                    } else {
+                        return 'fa fa-file';
+                    }
                 } else {
-                    return 'fa fa-file';
+                    throw new Error(`Error ocurred when trying to get icon for missgin resource: ${uri.toString(false)}.`);
                 }
             } catch (err) {
                 return 'fa fa-file';

@@ -91,12 +91,9 @@ export class FileNavigatorWidget extends FileTreeWidget {
             const treeNode = this.getTreeNodeFromData(e.dataTransfer);
             if (treeNode) {
                 const { id } = treeNode;
-                const exists = await this.fileSystem.exists(id);
-                if (exists) {
-                    const fileStat = await this.fileSystem.getFileStat(id);
-                    if (!fileStat.isDirectory) {
-                        this.commandService.executeCommand(CommonCommands.OPEN.id, new URI(id));
-                    }
+                const fileStat = await this.fileSystem.getFileStat(id);
+                if (fileStat && !fileStat.isDirectory) {
+                    this.commandService.executeCommand(CommonCommands.OPEN.id, new URI(id));
                 }
             }
         });

@@ -89,7 +89,9 @@ export class GitHistoryWidget extends GitNavigableListWidget<GitHistoryListNode>
         this.ready = false;
         if (options && options.uri) {
             const fileStat = await this.fileSystem.getFileStat(options.uri);
-            this.singleFileMode = !fileStat.isDirectory;
+            if (fileStat) {
+                this.singleFileMode = fileStat.isDirectory;
+            }
         }
         this.addCommits(options);
         this.update();
